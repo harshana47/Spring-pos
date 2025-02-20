@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Customer Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="container mt-4">
+
+<div class="row">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="index.html">Customer</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="item.html">Item</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <br><br>
+    <div class="col-md-5" style="margin-top: 30px">
+        <h3>Customer Form</h3>
+        <form id="customerForm">
+            <div class="mb-3">
+                <label for="customerId" class="form-label">Customer ID</label>
+                <input type="text" class="form-control" id="customerId">
+            </div>
+            <div class="mb-3">
+                <label for="customerName" class="form-label">Name</label>
+                <input type="text" class="form-control" id="customerName">
+            </div>
+            <div class="mb-3">
+                <label for="customerAddress" class="form-label">Address</label>
+                <input type="text" class="form-control" id="customerAddress">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="saveData()">Save</button>
+            <button type="button" class="btn btn-warning" onclick="updateData()">Update</button>
+            <button type="button" class="btn btn-danger" onclick="deleteData()">Delete</button>
+        </form>
+    </div>
+
+    <!-- Table Section -->
+    <div class="col-md-7" style="margin-top: 30px">
+        <h3>Customer List</h3>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="customerTableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const API_URL = "http://localhost:8080/api/v1/customer";
+    $(document).ready(function () {
+        loadCustomers();
+    });
+
+    function loadCustomers() {
+        $.ajax({
+            url: `${API_URL}/getAll`,
+            type: "GET",
+            success: function (customers) {
+                $("#customerTableBody").empty();
+                customers.forEach(customer => {
+                    let newRow = `<tr onclick="selectRow(this)">
+                        <td>${customer.id}</td>
+                        <td>${customer.name}</td>
+                        <td>${customer.address}</td>
+                        <td><button class="btn btn-sm btn-danger" onclick="deleteCustomer('${customer.id}', this)">Delete</button></td>
+                      </tr>`;
+                    $("#customerTableBody").append(newRow);
+                });
+            },
+            error: function () {
+                alert("Error loading customers!");
+            }
+        });
+    }
+
+    function saveData() {
+        let customer = {
+            id: $("#customerId").val(),
+            name: $("#customerName").val(),
+            address: $("#customerAddress").val(),
+        };
+
+        $.ajax({
+            url: `${API_URL}/save`,
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(customer),
+            success: function () {
+                alert("Customer saved successfully!");
+                loadCustomers();
+                clearForm();
+            },
+            error: function () {
+                alert("Error saving customer!");
+            }
+        });
+    }
+
+    function updateData() {
+        if (!selectedRow) {
+            alert("Please select a row to update!");
+            return;
+        }
+
+        let customer = {
+            id: $("#customerId").val(),
+            name: $("#customerName").val(),
+            address: $("#customerAddress").val(),
+        };
+
+        $.ajax({
+            url: `${API_URL}/update`,
+            type: "PUT",
+            contentType: "application/json",
+            data: JSON.stringify(customer),
+            success: function () {
+                alert("Customer updated successfully!");
+                loadCustomers();
+                clearForm();
+            },
+            error: function () {
+                alert("Error updating customer!");
+            }
+        });
+    }
+
+    // Function to delete a customer
+    function deleteCustomer(id, button) {
+        $.ajax({
+            url: `${API_URL}/delete/${id}`,
+            type: "DELETE",
+            success: function () {
+                alert("Customer deleted successfully!");
+                $(button).closest("tr").remove();
+            },
+            error: function () {
+                alert("Error deleting customer!");
+            }
+        });
+    }
+
+    function selectRow(row) {
+        selectedRow = row;
+        $("#customerId").val($(row).find("td:eq(0)").text());
+        $("#customerName").val($(row).find("td:eq(1)").text());
+        $("#customerAddress").val($(row).find("td:eq(2)").text());
+
+    }
+
+    function clearForm() {
+        $("#customerId").val("");
+        $("#customerName").val("");
+        $("#customerAddress").val("");
+        selectedRow = null;
+    }
+</script>
+</body>
+</html>
