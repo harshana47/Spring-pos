@@ -9,7 +9,6 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,13 +20,12 @@ public class CustomerService implements CustomerServiceImpl {
     private ModelMapper modelMapper;
 
     @Override
-    public boolean addCustomer(CustomerDTO customerDTO) {
+    public void addCustomer(CustomerDTO customerDTO) {
 //        Customer customer = new Customer(customerDTO.getId(), customerDTO.getName(), customerDTO.getAddress());
         if (customerRepository.existsById(customerDTO.getId())) {
             throw new RuntimeException("Customer already exists");
         }
         customerRepository.save(modelMapper.map(customerDTO, Customer.class));
-        return true;
     }
 
     @Override
@@ -42,22 +40,19 @@ public class CustomerService implements CustomerServiceImpl {
     }
 
     @Override
-    public boolean updateCustomer(CustomerDTO customerDTO) {
+    public void updateCustomer(CustomerDTO customerDTO) {
         if (customerRepository.existsById(customerDTO.getId())) {
 //            Customer customer = new Customer(customerDTO.getId(), customerDTO.getName(), customerDTO.getAddress());
-            Customer customer = modelMapper.map(customerDTO, Customer.class);
-            customerRepository.save(customer);
-            return true;
+            customerRepository.save(modelMapper.map(customerDTO, Customer.class));
         }
-        return false;
+        throw new RuntimeException("Customer does not exist");
     }
 
     @Override
-    public boolean deleteCustomer(int id) {
+    public void deleteCustomer(int id) {
         if (customerRepository.existsById(id)) {
             customerRepository.deleteById(id);
-            return true;
         }
-        return false;
+        throw new RuntimeException("Customer does not exist");
     }
 }

@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface CustomerServiceImpl {
 
-    public boolean addCustomer(CustomerDTO customerDTO);
+    public void addCustomer(CustomerDTO customerDTO);
     public List<CustomerDTO> getAllCustomers();
-    public boolean updateCustomer(CustomerDTO customerDTO);
-    public boolean deleteCustomer(int id);
+    public void updateCustomer(CustomerDTO customerDTO);
+    public void deleteCustomer(int id);
 }

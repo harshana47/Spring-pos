@@ -19,34 +19,24 @@ public class CustomerController {
     @PostMapping("save")
     public ResponseUtil saveCustomer(@RequestBody CustomerDTO customerDTO) {
         System.out.println(customerDTO.getName());
-        boolean res = customerService.addCustomer(customerDTO);
-        if(res){
-            return new ResponseUtil(201,"Customer Saved",null);
-        }else {
-            return new ResponseUtil(200,"Exist Customer",null);
-        }
+        customerService.addCustomer(customerDTO);
+        return new ResponseUtil(201,"Customer Saved",null);
     }
     @GetMapping("getAll")
-    public List<CustomerDTO> getAllCustomers() {
-        customerService.getAllCustomers();
-        return customerService.getAllCustomers();
+    public ResponseUtil getAllCustomers() {
+        return new ResponseUtil(
+                200,
+                "Customer List",
+                customerService.getAllCustomers());
     }
     @PutMapping("update")
     public ResponseUtil updateCustomer(@RequestBody CustomerDTO customerDTO) {
-        boolean res = customerService.updateCustomer(customerDTO);
-        if(res){
-            return new ResponseUtil(201,"Customer Updated",null);
-        }else {
-            return new ResponseUtil(200,"Error Updating Customer",null);
-        }
+        customerService.updateCustomer(customerDTO);
+        return new ResponseUtil(200,"Customer Updated",null);
     }
     @DeleteMapping("delete/{id}")
     public ResponseUtil deleteCustomer(@PathVariable("id") String id) {
-        boolean res = customerService.deleteCustomer(Integer.parseInt(id));
-        if(res){
-            return new ResponseUtil(201,"Customer Deleted",null);
-        }else {
-            return new ResponseUtil(200,"Error Deleting Customer",null);
-        }
+        customerService.deleteCustomer(Integer.parseInt(id));
+        return new ResponseUtil(200,"Customer Deleted",null);
     }
 }

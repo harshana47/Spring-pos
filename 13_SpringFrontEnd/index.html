@@ -23,6 +23,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="item.html">Item</a>
                     </li>
+                    <li class="nav-item"><a class="nav-link" href="placeOrder.html">Order</a></li>
                 </ul>
             </div>
         </div>
@@ -49,7 +50,6 @@
         </form>
     </div>
 
-    <!-- Table Section -->
     <div class="col-md-7" style="margin-top: 30px">
         <h3>Customer List</h3>
         <table class="table table-bordered">
@@ -76,23 +76,31 @@
         $.ajax({
             url: `${API_URL}/getAll`,
             type: "GET",
-            success: function (customers) {
-                $("#customerTableBody").empty();
-                customers.forEach(customer => {
-                    let newRow = `<tr onclick="selectRow(this)">
+            success: function (response) {
+                let customers = response.data; // Ensure response contains data
+                $("#customerTableBody").empty(); // Clear before appending new rows
+
+                if (customers && customers.length > 0) {
+                    customers.forEach(customer => {
+                        let newRow = `<tr>
                         <td>${customer.id}</td>
                         <td>${customer.name}</td>
                         <td>${customer.address}</td>
                         <td><button class="btn btn-sm btn-danger" onclick="deleteCustomer('${customer.id}', this)">Delete</button></td>
                       </tr>`;
-                    $("#customerTableBody").append(newRow);
-                });
+                        $("#customerTableBody").append(newRow);
+                    });
+                } else {
+                    $("#customerTableBody").append('<tr><td colspan="4" class="text-center">No Customers Found</td></tr>');
+                }
             },
-            error: function () {
+            error: function (xhr, status, error) {
+                console.error("Error loading customers:", error);
                 alert("Error loading customers!");
             }
         });
     }
+
 
     function saveData() {
         let customer = {
@@ -145,7 +153,6 @@
         });
     }
 
-    // Function to delete a customer
     function deleteCustomer(id, button) {
         $.ajax({
             url: `${API_URL}/delete/${id}`,
