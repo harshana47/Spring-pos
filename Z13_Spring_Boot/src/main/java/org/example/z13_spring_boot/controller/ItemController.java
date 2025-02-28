@@ -19,33 +19,24 @@ public class ItemController {
     @PostMapping("save")
     public ResponseUtil saveItem(@RequestBody ItemDTO itemDTO){
         System.out.println(itemDTO.getName());
-        boolean res = itemService.addItem(itemDTO);
-        if(res){
-            return new ResponseUtil(201,"Item Saved",null);
-        }else {
-            return new ResponseUtil(200,"Exist Item",null);
-        }
+        itemService.addItem(itemDTO);
+        return new ResponseUtil(201,"Item Saved",null);
     }
     @GetMapping("getAll")
-    public List<ItemDTO> getAllItems(){
-        return itemService.getAllItems();
+    public ResponseUtil getAllItems(){
+        return new ResponseUtil(
+                200,
+                "Customer List",
+                itemService.getAllItems());
     }
     @PutMapping("update")
     public ResponseUtil updateItem(@RequestBody ItemDTO itemDTO){
-        boolean res = itemService.updateItem(itemDTO);
-        if(res){
-            return new ResponseUtil(201,"Item Updated",null);
-        }else {
-            return new ResponseUtil(200,"error updating Item",null);
-        }
+        itemService.updateItem(itemDTO);
+        return new ResponseUtil(201,"Item Updated",null);
     }
     @DeleteMapping("delete/{id}")
     public ResponseUtil deleteItem(@PathVariable("id") String id){
-        boolean res = itemService.deleteItem(Integer.parseInt(id));
-        if(res){
-            return new ResponseUtil(201,"Item Deleted",null);
-        }else {
-            return new ResponseUtil(200,"Error Deleting Item",null);
-        }
+        itemService.deleteItem(Integer.parseInt(id));
+        return new ResponseUtil(201,"Item Deleted",null);
     }
 }

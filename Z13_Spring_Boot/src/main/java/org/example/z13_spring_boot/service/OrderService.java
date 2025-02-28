@@ -41,7 +41,6 @@ public class OrderService {
 
             Orders savedOrder = ordersRepo.save(order);
 
-            // Process each order detail
             for (OrderDetailDTO orderDetailDTO : ordersDTO.getOrderDetails()) {
                 Item item = itemRepo.findById(orderDetailDTO.getItemId())
                         .orElseThrow(() -> new RuntimeException("Item not found"));
@@ -49,7 +48,7 @@ public class OrderService {
                 OrderDetails orderDetails = new OrderDetails();
                 orderDetails.setQuantity(orderDetailDTO.getQuantity());
                 orderDetails.setTotal(orderDetailDTO.getTotal());
-                orderDetails.setItem(item);  // Set the item from the itemId
+                orderDetails.setItem(item);
                 orderDetails.setOrders(savedOrder);
 
                 orderDetailRepo.save(orderDetails);

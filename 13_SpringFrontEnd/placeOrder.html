@@ -18,7 +18,6 @@
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link" href="index.html">Customers</a></li>
                 <li class="nav-item"><a class="nav-link" href="item.html">Items</a></li>
-                <li class="nav-item"><a class="nav-link" href="placeOrder.html">Order</a></li>
             </ul>
         </div>
     </div>
@@ -77,19 +76,30 @@
     });
 
     function loadCustomers() {
-        $.get(`${API_URL}/customer/getAll`, function (customers) {
-            customers.forEach(customer => {
-                $("#customerId").append(`<option value="${customer.id}">${customer.id}</option>`);
-            });
+        $.get(`${API_URL}/customer/getAll`, function (response) {
+            if (response.data) {
+                response.data.forEach(customer => {
+                    $("#customerId").append(`<option value="${customer.id}">${customer.id}</option>`);
+                });
+            } else {
+                console.error("No customers found!");
+            }
+        }).fail(function () {
+            console.error("Failed to fetch customers!");
         });
     }
 
     function loadItems() {
-        $.get(`${API_URL}/item/getAll`, function (items) {
-            items.forEach(item => {
-                $("#itemId").append(`<option value="${item.id}" data-name="${item.name}"
-                                            data-price="${item.price}">${item.id}</option>`);
-            });
+        $.get(`${API_URL}/item/getAll`, function (response) {
+            if (response.data) {
+                response.data.forEach(item => {
+                    $("#itemId").append(`<option value="${item.id}" data-name="${item.name}" data-price="${item.price}">${item.id}</option>`);
+                });
+            } else {
+                console.error("No item found!");
+            }
+        }).fail(function () {
+            console.error("Failed to fetch items!");
         });
     }
 
@@ -133,7 +143,7 @@
 
         let orderData = {
             customerId: customerId,
-            orderDate: new Date().toISOString().split("T")[0],
+            orderDate: new Date().toISOString().split("T")[0], // ✅ Adds current date
             orderDetails: orderItems,
             totalAmount: totalAmount
         };

@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface ItemServiceImpl {
-    public boolean addItem(ItemDTO itemDTO);
+    public void addItem(ItemDTO itemDTO);
 
     public List<ItemDTO> getAllItems();
 
-    public boolean updateItem(ItemDTO itemDTO);
+    public void updateItem(ItemDTO itemDTO);
 
-    public boolean deleteItem(int id);
+    public void deleteItem(int id);
 }

@@ -11,14 +11,12 @@ public class OrderDetails {
     private int quantity;
     private double total;
 
-    // Many order details belong to one order
     @ManyToOne
-    @JoinColumn(name = "order_id") // Foreign key in the order_details table
+    @JoinColumn(name = "order_id")
     private Orders orders;
 
-    // Many order details can have one item
     @ManyToOne
-    @JoinColumn(name = "item_id") // Foreign key in the order_details table
+    @JoinColumn(name = "item_id")
     private Item item;
 
     public OrderDetails() {

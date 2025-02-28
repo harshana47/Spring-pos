@@ -77,8 +77,8 @@
             url: `${API_URL}/getAll`,
             type: "GET",
             success: function (response) {
-                let customers = response.data; // Ensure response contains data
-                $("#customerTableBody").empty(); // Clear before appending new rows
+                let customers = response.data;
+                $("#customerTableBody").empty();
 
                 if (customers && customers.length > 0) {
                     customers.forEach(customer => {
